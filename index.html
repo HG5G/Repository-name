@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة مديري المدارس — نظام تقييم الأداء الوظيفي</title>
+  <!-- Favicon: استخدام شعار الوزارة الرسمي -->
+  <link rel="icon" type="image/svg+xml" href="./assets/ministry-logo.svg">
+  <link rel="alternate icon" type="image/png" href="./assets/ministry-logo.png">
+  <!-- Tailwind CSS CDN for self-contained, instant deployment -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Cairo', sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+  <!-- Header & Navigation مع الشعار الرسمي للوزارة -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl bg-white border border-slate-200 p-1.5 flex items-center justify-center shadow-xs">
+          <img
+            src="./assets/ministry-logo.svg"
+            alt="وزارة التعليم بالمملكة العربية السعودية"
+            class="max-h-full max-w-full object-contain"
+          />
+        </div>
+        <div>
+          <span class="text-[10px] uppercase tracking-wider text-emerald-700 font-bold block">المملكة العربية السعودية • وزارة التعليم</span>
+          <h1 class="text-base font-bold text-slate-800 leading-tight">بوابة مديري المدارس لتقييم الأداء</h1>
+        </div>
+      </div>
+
+      <!-- User status & Auth button -->
+      <div id="navUserSection" class="flex items-center gap-3">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- View: Login Screen مع الشعار الرسمي -->
+    <div id="loginView" class="max-w-md mx-auto py-8">
+      <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-xl text-center space-y-6">
+        <div class="w-24 h-24 p-2 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+          <img
+            src="./assets/ministry-logo.svg"
+            alt="شعار وزارة التعليم السعودية"
+            class="max-h-full max-w-full object-contain"
+          />
+        </div>
+        <div>
+          <span class="text-[11px] text-emerald-700 font-bold block mb-1">المملكة العربية السعودية • وزارة التعليم</span>
+          <h2 class="text-xl font-bold text-slate-800">بوابة مديري المدارس</h2>
+          <p class="text-xs text-slate-500 mt-1">سجّل دخولك برقم الهوية أو اسم المستخدم لرصد الشواهد ومتابعة نتائجك</p>
+        </div>
+
+        <div id="loginError" class="hidden p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl text-right"></div>
+
+        <form id="loginForm" onsubmit="return false;" class="space-y-4 text-right">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">اسم المستخدم / رقم الهوية</label>
+            <input type="text" id="loginUsername" required placeholder="مثال: 1029384756 أو username"
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">كلمة المرور</label>
+            <input type="password" id="loginPassword" required placeholder="كلمة المرور"
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+          </div>
+          <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-600/20 transition">
+            دخول إلى البوابة
+          </button>
+        </form>
+
+        <div class="pt-4 border-t border-slate-100 text-[11px] text-slate-400">
+          بوابة موحدة لرفع الشواهد، وخطط التحسين النصف سنوية، واستعراض نتائج التقييم المعتمدة.
+        </div>
+      </div>
+    </div>
+
+    <!-- View: Dashboard & Main Features -->
+    <div id="dashboardView" class="hidden space-y-6">
+      <!-- Principal Banner -->
+      <div class="bg-gradient-to-r from-emerald-800 to-teal-900 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold">مرحباً بك في بوابتك الإلكترونية</span>
+          <h2 id="principalName" class="text-2xl font-black">—</h2>
+          <p id="principalMeta" class="text-xs text-emerald-200">—</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl flex items-center gap-4">
+          <div>
+            <span class="text-xs text-emerald-200 block">النتيجة النهائية المعتمدة</span>
+            <div id="principalScore" class="text-2xl font-black text-white">غير معتمدة بعد</div>
+            <span id="principalRating" class="text-xs text-emerald-300 block"></span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-emerald-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="flex items-center gap-2 border-b border-slate-200">
+        <button onclick="switchTab('evidences')" id="tabBtnEvidences" class="px-5 py-3 border-b-2 font-bold text-sm transition border-emerald-600 text-emerald-700">
+          رصد ورفع الشواهد
+        </button>
+        <button onclick="switchTab('plans')" id="tabBtnPlans" class="px-5 py-3 border-b-2 font-bold text-sm transition border-transparent text-slate-500 hover:text-slate-800">
+          خطة التحسين (نصف سنوي)
+        </button>
+        <button onclick="switchTab('results')" id="tabBtnResults" class="px-5 py-3 border-b-2 font-bold text-sm transition border-transparent text-slate-500 hover:text-slate-800">
+          تقرير التقييم المعتمد
+        </button>
+      </div>
+
+      <!-- Tab Content: Evidences -->
+      <div id="tabEvidences" class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">شواهد معايير الأداء الوظيفي</h3>
+            <p class="text-xs text-slate-500">اختر المعيار التقييمي لرفع الرابط أو الوثيقة أو النص التوثيقي</p>
+          </div>
+          <button onclick="openEvidenceModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 self-start">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            <span>إضافة شاهد جديد</span>
+          </button>
+        </div>
+
+        <div id="evidencesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Improvement Plans (Mid-year only) -->
+      <div id="tabPlans" class="hidden space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">خطة التحسين والتطوير (للتقييم النصف سنوي فقط)</h3>
+            <p class="text-xs text-slate-500">تُحدد الأهداف ومجالات التطوير بناءً على مخرجات التقييم النصفي، ومغلقة في التقييم النهائي</p>
+          </div>
+          <button onclick="openPlanModal()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 self-start">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            <span>إضافة هدف تحسين</span>
+          </button>
+        </div>
+
+        <div id="plansList" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Approved Evaluation Results -->
+      <div id="tabResults" class="hidden space-y-4">
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div>
+              <h3 class="text-base font-bold text-slate-800">كشف الدرجات والنتائج المعتمدة</h3>
+              <p class="text-xs text-slate-500">بيانات درجات المعايير وملاحظات المقيم المعتمدة رسمياً</p>
+            </div>
+            <button onclick="window.print()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+              </svg>
+              <span>طباعة الكشف</span>
+            </button>
+          </div>
+
+          <div id="resultsContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Evidence Modal -->
+  <div id="evidenceModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 text-right shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h4 class="font-bold text-sm text-slate-800">إضافة شاهد إثبات لمعيار</h4>
+        <button onclick="closeEvidenceModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+
+      <form id="evidenceForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">المعيار التقييمي</label>
+          <select id="evidenceElement" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-emerald-600">
+            <!-- Elements injected by JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">عنوان الشاهد</label>
+          <input type="text" id="evidenceTitle" required placeholder="مثال: محضر اجتماع لجنة التحصيل الدراسي" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">نوع الشاهد</label>
+          <select id="evidenceType" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-emerald-600">
+            <option value="link">رابط إلكتروني (سحابي / درايف / منصة مدرستي)</option>
+            <option value="text">بيان نصي وتوثيق مكتوب</option>
+            <option value="file">ملف / وثيقة</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">الرابط أو النص أو الوصف</label>
+          <textarea id="evidenceContent" rows="3" required placeholder="ضع الرابط أو اكتب توثيق الشاهد هنا..." class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-emerald-600"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="closeEvidenceModal()" class="px-4 py-2 rounded-xl text-xs text-slate-600 hover:bg-slate-100">إلغاء</button>
+          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm">حفظ الشاهد</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Plan Modal -->
+  <div id="planModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 text-right shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h4 class="font-bold text-sm text-slate-800">إضافة هدف لخطة التحسين النصف سنوية</h4>
+        <button onclick="closePlanModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+
+      <form id="planForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">الهدف التطويري</label>
+          <input type="text" id="planGoal" required placeholder="مثال: رفع نسبة إتقان مهارات الرياضيات الأساسية" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-teal-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">الإجراءات والبرامج المقترحة</label>
+          <textarea id="planActions" rows="3" required placeholder="اكتب الإجراءات التنفيذية والخطوات المقترحة..." class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-teal-600"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="closePlanModal()" class="px-4 py-2 rounded-xl text-xs text-slate-600 hover:bg-slate-100">إلغاء</button>
+          <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-sm">حفظ الهدف</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer مع شعار وهوية الوزارة -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500 space-y-2">
+    <div class="flex items-center justify-center gap-2">
+      <img src="./assets/ministry-logo.svg" alt="وزارة التعليم" class="h-6 object-contain" />
+      <span class="font-semibold text-slate-700">وزارة التعليم • المملكة العربية السعودية</span>
+    </div>
+    <p class="text-[11px] text-slate-400">نظام تقييم الأداء الوظيفي لمديري المدارس — بوابة الخدمات الإلكترونية</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./app.js"></script>
+</body>
+</html>
