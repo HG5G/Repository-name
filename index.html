@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>بوابة مدراء المدارس — نظام تقييم الأداء الوظيفي</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/ministry-logo.svg">
+  <link rel="alternate icon" type="image/png" href="./assets/ministry-logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-image: radial-gradient(circle at 15% 10%, rgba(16, 185, 129, 0.06), transparent 35%),
+                        radial-gradient(circle at 85% 5%, rgba(13, 148, 136, 0.06), transparent 35%);
+    }
+    .glass-header {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up { animation: fadeSlideUp 0.28s ease-out; }
+    @media print {
+      header, footer, #tabsBar, #heroBannerActions, .no-print { display: none !important; }
+      body { background: #fff !important; }
+    }
+  </style>
+  <script>
+    function togglePasswordVisibility() {
+      var input = document.getElementById('loginPassword');
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+    window.togglePasswordVisibility = togglePasswordVisibility;
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-emerald-600 selection:text-white">
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-5 left-5 z-[70] flex flex-col gap-2 max-w-sm w-[calc(100vw-2.5rem)] pointer-events-none"></div>
+
+  <!-- Header & Navigation -->
+  <header class="glass-header border-b border-slate-200/80 sticky top-0 z-40 shadow-2xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[68px] py-2 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-11 h-11 rounded-2xl bg-white border border-slate-200/90 p-1.5 flex items-center justify-center shadow-xs shrink-0">
+          <img
+            src="./assets/ministry-logo.svg"
+            alt="شعار وزارة التعليم"
+            class="max-h-full max-w-full object-contain"
+          />
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-[11px] sm:text-xs md:text-sm font-extrabold text-slate-800 leading-snug truncate">
+            تقييم أداء مدراء المدارس — الدليل الإرشادي لإدارة الأداء الوظيفي (الإصدار الثاني)
+          </h1>
+          <p class="text-[10px] sm:text-[11px] text-emerald-700 font-bold mt-0.5 truncate">
+            إعداد وتنسيق : أخصائي الإدارة المدرسية / الحسين إبراهيم شويع
+          </p>
+        </div>
+      </div>
+
+      <!-- User status & Auth button -->
+      <div id="navUserSection" class="flex items-center gap-2 shrink-0">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+    <!-- View: Login Screen -->
+    <div id="loginView" class="max-w-5xl mx-auto py-4 sm:py-6 animate-fade-up">
+      <div class="bg-white border border-slate-200/90 rounded-3xl shadow-2xl shadow-slate-900/5 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
+
+        <!-- الجانب الأيمن: اللوحة التعريفية والبصرية -->
+        <div class="lg:col-span-7 bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute -right-20 -top-20 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-teal-400/15 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 space-y-4">
+            <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs text-emerald-200 font-semibold shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>بوابة الخدمات الإلكترونية لمدراء المدارس</span>
+            </div>
+
+            <h2 class="text-xl sm:text-2xl font-black text-white leading-relaxed">
+              تقييم أداء مدراء المدارس وفق الدليل الإرشادي لإدارة الأداء الوظيفي لشاغلي الوظائف التعليمية (الإصدار الثاني)
+            </h2>
+            <p class="text-xs sm:text-sm text-emerald-200 font-bold leading-relaxed max-w-lg mt-2">
+              إعداد وتنسيق : أخصائي الإدارة المدرسية / الحسين إبراهيم شويع
+            </p>
+          </div>
+
+          <!-- ميزات المنظومة -->
+          <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 my-8">
+            <div class="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-1.5 hover:bg-white/15 transition">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/25 text-emerald-200 flex items-center justify-center text-xs font-black">19</div>
+              <h4 class="text-xs font-bold text-white">توثيق الشواهد وتعليقات المشرف</h4>
+              <p class="text-[11px] text-emerald-100/80 leading-snug">رفع ملفات ووثائق المعايير مع استقبال ملاحظات المشرف مباشرة</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-1.5 hover:bg-white/15 transition">
+              <div class="w-8 h-8 rounded-xl bg-teal-500/25 text-teal-200 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><circle cx="12" cy="12" r="6" stroke-width="2"/><circle cx="12" cy="12" r="2" stroke-width="2"/></svg>
+              </div>
+              <h4 class="text-xs font-bold text-white">خطط التحسين النصف سنوية</h4>
+              <p class="text-[11px] text-teal-100/80 leading-snug">بناء خطط التطوير ومتابعة التغذية الراجعة من المشرف التربوي</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-1.5 hover:bg-white/15 transition">
+              <div class="w-8 h-8 rounded-xl bg-amber-500/25 text-amber-200 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              </div>
+              <h4 class="text-xs font-bold text-white">تنبيهات وتعليمات المشرف</h4>
+              <p class="text-[11px] text-amber-100/80 leading-snug">قسم مخصص لاستقبال التوجيهات العامة والإشعارات الفورية</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-1.5 hover:bg-white/15 transition">
+              <div class="w-8 h-8 rounded-xl bg-sky-500/25 text-sky-200 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+              </div>
+              <h4 class="text-xs font-bold text-white">الاعتماد والنتائج المرحلية</h4>
+              <p class="text-[11px] text-sky-100/80 leading-snug">أرشفة مستقلة لكل عام دراسي ولكل فترة تقييمية</p>
+            </div>
+          </div>
+
+          <div class="relative z-10 pt-4 border-t border-white/15 text-xs text-emerald-200/70">
+            <p>نظام تقييم الأداء الوظيفي — بوابة الخدمات الإلكترونية المتكاملة</p>
+          </div>
+        </div>
+
+        <!-- الجانب الأيسر: بطاقة تسجيل الدخول -->
+        <div class="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-center bg-white">
+          <div class="space-y-6">
+            <div class="text-right space-y-1.5">
+              <div class="w-14 h-14 p-2 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-3 shadow-2xs">
+                <img src="./assets/ministry-logo.svg" alt="وزارة التعليم" class="max-h-full max-w-full object-contain" />
+              </div>
+              <h3 class="text-xl font-black text-slate-800">تسجيل الدخول للبوابة</h3>
+              <p class="text-xs text-slate-500">أدخل رقم السجل المدني للوصول إلى ملفك التقييمي للمرحلة الجارية</p>
+            </div>
+
+            <div id="loginError" class="hidden p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-xl text-right"></div>
+
+            <form id="loginForm" onsubmit="handleLoginSubmit(event); return false;" class="space-y-4 text-right">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم السجل المدني / اسم المستخدم</label>
+                <div class="relative">
+                  <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                  </span>
+                  <input type="text" id="loginUsername" required placeholder="أدخل رقم السجل المدني"
+                         class="w-full pr-10 pl-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 transition">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">كلمة المرور</label>
+                <div class="relative">
+                  <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                  </span>
+                  <input type="password" id="loginPassword" required placeholder="كلمة المرور"
+                         class="w-full pr-10 pl-10 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 transition">
+                  <button type="button" onclick="togglePasswordVisibility()" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-xl text-sm shadow-lg shadow-emerald-600/25 transition flex items-center justify-center gap-2">
+                <span>دخول إلى البوابة</span>
+                <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </form>
+
+            <div class="pt-4 border-t border-slate-100 space-y-1 text-center">
+              <p class="text-[11px] text-slate-400">
+                كلمة المرور الافتراضية هي <strong>السجل المدني</strong> أو <strong>123456</strong>
+              </p>
+              <p class="text-[10px] text-slate-400">
+                لأي استفسار أو مساعدة، يرجى التواصل مع مشرف التقييم بالإدارة
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- View: Dashboard & Main Features -->
+    <div id="dashboardView" class="hidden space-y-6 animate-fade-up">
+
+      <!-- Principal Hero & Active Stage Card -->
+      <div class="bg-gradient-to-l from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-6 sm:p-7 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute -left-16 -top-16 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-teal-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div class="space-y-2.5">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-[11px] font-bold border border-white/15">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>بوابتك التقييمية الإلكترونية</span>
+              </span>
+              <!-- شارة المرحلة النشطة الموحدة -->
+              <span id="stageYearBadge" class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/25 border border-emerald-300/30 rounded-full text-xs font-extrabold text-emerald-100">
+                العام الدراسي: —
+              </span>
+              <span id="stagePeriodBadge" class="inline-flex items-center gap-1.5 px-3.5 py-1 bg-white text-emerald-900 rounded-full text-xs font-black shadow-sm">
+                فترة التقييم النصف سنوي
+              </span>
+            </div>
+
+            <h2 id="principalName" class="text-2xl sm:text-3xl font-black tracking-tight">—</h2>
+            <p id="principalMeta" class="text-xs sm:text-sm text-emerald-100/90 font-medium">—</p>
+            <p id="stageHintText" class="text-[11px] text-emerald-200/90 pt-0.5"></p>
+          </div>
+
+          <!-- بطاقة الدرجة المعتمدة للمرحلة النشطة -->
+          <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 sm:p-5 rounded-2xl flex items-center gap-4 shrink-0 min-w-[240px]">
+            <div class="flex-1">
+              <span id="scoreCardSubtitle" class="text-[11px] text-emerald-200 font-semibold block">نتيجة المرحلة الحالية</span>
+              <div id="principalScore" class="text-2xl font-black text-white mt-0.5">غير معتمدة بعد</div>
+              <span id="principalRating" class="text-xs text-emerald-300 font-bold block mt-0.5"></span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-white/15 border border-white/15 flex items-center justify-center text-emerald-300 shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ملخص سريع للمرحلة النشطة -->
+        <div class="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-5 pt-4 border-t border-white/15">
+          <button onclick="switchTab('evidences')" class="text-right p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 transition">
+            <span class="text-[11px] text-emerald-200 block">شواهد المرحلة الحالية</span>
+            <span id="statEvidencesCount" class="text-lg font-black text-white">0</span>
+          </button>
+          <button onclick="switchTab('plans')" class="text-right p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 transition">
+            <span class="text-[11px] text-emerald-200 block">حالة خطط التحسين</span>
+            <span id="statPlansStatus" class="text-sm font-black text-white">—</span>
+          </button>
+          <button onclick="switchTab('alerts')" class="text-right p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 transition">
+            <span class="text-[11px] text-amber-200 block">تنبيهات عامة من المشرف</span>
+            <span id="statAlertsCount" class="text-lg font-black text-white">0</span>
+          </button>
+          <button onclick="switchTab('results')" class="text-right p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 transition">
+            <span class="text-[11px] text-sky-200 block">تقرير التقييم المعتمد</span>
+            <span id="statEvalStatus" class="text-sm font-black text-white">قيد المتابعة</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modern 4-Tabs Navigation -->
+      <div id="tabsBar" class="bg-white p-1.5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <button onclick="switchTab('evidences')" id="tabBtnEvidences" class="flex-1 min-w-fit px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 bg-emerald-600 text-white shadow-sm">
+          <span>رصد ورفع الشواهد</span>
+        </button>
+        <button onclick="switchTab('plans')" id="tabBtnPlans" class="flex-1 min-w-fit px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100">
+          <span>خطط التحسين</span>
+        </button>
+        <button onclick="switchTab('alerts')" id="tabBtnAlerts" class="flex-1 min-w-fit px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100">
+          <span>تنبيهات عامة من المشرف</span>
+        </button>
+        <button onclick="switchTab('results')" id="tabBtnResults" class="flex-1 min-w-fit px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100">
+          <span>تقرير التقييم المعتمد</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: Evidences -->
+      <div id="tabEvidences" class="space-y-4 animate-fade-up">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="text-sm sm:text-base font-extrabold text-slate-800">شواهد معايير الأداء الوظيفي</h3>
+              <span id="evidencesStageTag" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200"></span>
+            </div>
+            <p class="text-xs text-slate-500">ارفع الملفات أو الروابط الداعمة لمعايير التقييم في هذه المرحلة وتابع تعليقات المشرف عليها</p>
+          </div>
+          <button onclick="openEvidenceModal()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 self-start sm:self-auto shrink-0 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+            </svg>
+            <span>إضافة شاهد جديد</span>
+          </button>
+        </div>
+
+        <div id="evidencesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Improvement Plans -->
+      <div id="tabPlans" class="hidden space-y-4 animate-fade-up">
+        <div id="planFinalNotice" class="hidden p-5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-3.5 shadow-2xs">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <div class="space-y-1 text-xs">
+            <p class="font-extrabold text-amber-950 text-sm">نحن الآن في فترة التقييم النهائي — خطط التحسين مغلقة في هذه المرحلة</p>
+            <p class="text-amber-800 leading-relaxed">
+              تُتاح إضافة خطط التحسين والتطوير خلال <strong>فترة التقييم النصف سنوي</strong> فقط، وتُحفظ خطط النصف سنوي في سجلها الخاص بحيث تُفتح وتظهر تلقائياً عند العودة لفترة التقييم النصف سنوي.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="text-sm sm:text-base font-extrabold text-slate-800">خطة التحسين والتطوير</h3>
+              <span id="plansStageTag" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-50 text-teal-700 border border-teal-200"></span>
+            </div>
+            <p class="text-xs text-slate-500">تُحدد الأهداف ومجالات التطوير خلال فترة التقييم النصف سنوي مع استقبال تعليقات المشرف عليها</p>
+          </div>
+          <div id="planActionBtnContainer" class="shrink-0">
+            <button onclick="openPlanModal()" class="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 self-start transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+              </svg>
+              <span>إضافة هدف تحسين</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="plansList" class="space-y-3.5">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Tab 3: General Supervisor Alerts (تنبيهات عامة من المشرف) -->
+      <div id="tabAlerts" class="hidden space-y-4 animate-fade-up">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="text-sm sm:text-base font-extrabold text-slate-800">تنبيهات عامة من المشرف</h3>
+              <span id="alertsStageTag" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200"></span>
+            </div>
+            <p class="text-xs text-slate-500">التعليمات والتوجيهات الإشرافية العامة المرسلة إليك من المشرف / المسؤول في هذه المرحلة</p>
+          </div>
+        </div>
+
+        <div id="alertsList" class="space-y-3.5">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Tab 4: Approved Evaluation Results -->
+      <div id="tabResults" class="hidden space-y-4 animate-fade-up">
+        <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-2xs space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-base font-extrabold text-slate-800">كشف الدرجات والنتائج المعتمدة</h3>
+                <span id="resultsStageTag" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-sky-50 text-sky-800 border border-sky-200"></span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">بيانات درجات المعايير وملاحظات المقيم المعتمدة رسمياً لهذه الفترة</p>
+            </div>
+            <button onclick="window.print()" class="no-print px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+              </svg>
+              <span>طباعة الكشف</span>
+            </button>
+          </div>
+
+          <div id="resultsContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Evidence Modal -->
+  <div id="evidenceModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 text-right shadow-2xl space-y-4 animate-fade-up">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h4 class="font-extrabold text-sm text-slate-800">إضافة شاهد إثبات لمعيار</h4>
+          <p id="evidenceModalStageHint" class="text-[11px] text-emerald-700 font-semibold mt-0.5"></p>
+        </div>
+        <button onclick="closeEvidenceModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">✕</button>
+      </div>
+
+      <form id="evidenceForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">المعيار التقييمي</label>
+          <select id="evidenceElement" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-emerald-600 bg-white">
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">عنوان الشاهد</label>
+          <input type="text" id="evidenceTitle" required placeholder="مثال: محضر اجتماع لجنة التحصيل الدراسي" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">إرفاق ملفات الشاهد (يمكن اختيار ملف أو عدة ملفات معاً)</label>
+          <div class="border border-dashed border-slate-300 rounded-xl p-3 bg-slate-50/70 hover:bg-slate-50 transition space-y-2">
+            <input type="file" id="evidenceFileInput" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.xls,.xlsx" class="w-full text-xs text-slate-600 file:mr-0 file:ml-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer">
+            <p id="evidenceFileName" class="text-[11px] text-slate-400">يمكنك تحديد أكثر من ملف في نفس المرة (PDF، الصور، Word، Excel)</p>
+            <div id="evidenceFilesPreview" class="hidden space-y-1.5 pt-1"></div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">الرابط الإلكتروني أو التوثيق والوصف</label>
+          <textarea id="evidenceContent" rows="3" placeholder="ضع الرابط الإلكتروني (درايف، ون درايف، منصة مدرستي) أو اكتب توثيق الشاهد هنا..." class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-emerald-600"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeEvidenceModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">إلغاء</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm">حفظ وإرسال الشاهد</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Plan Modal -->
+  <div id="planModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 text-right shadow-2xl space-y-4 animate-fade-up">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h4 class="font-extrabold text-sm text-slate-800">إضافة هدف لخطة التحسين النصف سنوية</h4>
+          <p id="planModalStageHint" class="text-[11px] text-teal-700 font-semibold mt-0.5"></p>
+        </div>
+        <button onclick="closePlanModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">✕</button>
+      </div>
+
+      <form id="planForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">نطاق خطة التحسين</label>
+          <select id="planScope" onchange="handlePlanScopeChange()" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-teal-600 bg-white">
+            <option value="general">خطة تطوير عامة للمدرسة (غير مرتبطة بمعيار محدد)</option>
+            <option value="element">تطوير أحد معايير الأداء الوظيفي الـ 19</option>
+          </select>
+        </div>
+
+        <div id="planElementContainer" class="hidden">
+          <label class="block text-xs font-bold text-slate-700 mb-1">المعيار التقييمي المراد تطويره</label>
+          <select id="planElement" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-teal-600 bg-white">
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">الهدف التطويري</label>
+          <input type="text" id="planGoal" required placeholder="مثال: رفع نسبة إتقان مهارات الرياضيات الأساسية" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-teal-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">الإجراءات والبرامج المقترحة</label>
+          <textarea id="planActions" rows="3" required placeholder="اكتب الإجراءات التنفيذية والخطوات المقترحة..." class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-teal-600"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">إرفاق ملفات الخطة (اختياري)</label>
+          <div class="border border-dashed border-slate-300 rounded-xl p-3 bg-slate-50/70 hover:bg-slate-50 transition space-y-2">
+            <input type="file" id="planFileInput" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.xls,.xlsx" class="w-full text-xs text-slate-600 file:mr-0 file:ml-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-teal-600 file:text-white hover:file:bg-teal-700 cursor-pointer">
+            <p id="planFileName" class="text-[11px] text-slate-400">يمكنك تحديد أكثر من ملف في نفس المرة (PDF، الصور، Word، Excel — حتى 20 ميجابايت للملف)</p>
+            <div id="planFilesPreview" class="hidden space-y-1.5 pt-1"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closePlanModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">إلغاء</button>
+          <button type="submit" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-sm">حفظ وإرسال الخطة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Center Modal -->
+  <div id="notifModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 text-right shadow-2xl space-y-4 max-h-[85vh] flex flex-col animate-fade-up">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-200/70 shadow-2xs">
+            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          </div>
+          <div>
+            <h4 class="font-extrabold text-sm text-slate-800">مركز الإشعارات والتنبيهات الإشرافية</h4>
+            <p class="text-[11px] text-slate-400">التنبيهات العامة وتعليقات المشرف على الشواهد والخطط</p>
+          </div>
+        </div>
+        <button onclick="closeNotifModal()" class="text-slate-400 hover:text-slate-600 text-sm p-1.5 rounded-lg hover:bg-slate-100 transition">✕</button>
+      </div>
+
+      <div id="notifList" class="flex-1 overflow-y-auto space-y-2.5 pr-1">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span id="notifSummaryText" class="text-[11px] text-slate-500 font-medium"></span>
+          <button id="markAllNotifsBtn" onclick="markAllNotificationsRead()" class="hidden px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-[11px] font-bold transition">
+            تحديد الكل كمقروء ✓
+          </button>
+        </div>
+        <button onclick="closeNotifModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+          إغلاق
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Confirm Modal (بديل عصري لنوافذ المتصفح التقليدية) -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-right shadow-2xl space-y-4 animate-fade-up">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 border border-red-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <h4 id="confirmModalTitle" class="font-extrabold text-sm text-slate-800">تأكيد الإجراء</h4>
+          <p id="confirmModalMessage" class="text-xs text-slate-500 leading-relaxed"></p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+        <button type="button" id="confirmCancelBtn" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">إلغاء</button>
+        <button type="button" id="confirmAcceptBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-sm transition">تأكيد الحذف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200/80 py-5 mt-12 text-center text-xs text-slate-500 space-y-1">
+    <p class="font-bold text-slate-600">نظام تقييم الأداء الوظيفي لمدراء المدارس</p>
+    <p class="text-[11px] text-slate-400">بوابة الخدمات الإلكترونية — إعداد وتنسيق : أخصائي الإدارة المدرسية / الحسين إبراهيم شويع</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./app.js?v=20261025_01"></script>
+</body>
+</html>
